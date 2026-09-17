@@ -1,0 +1,12 @@
+const carousel=document.querySelector('.carousel');const slides=[...document.querySelectorAll('.slide')];const progress=document.querySelector('.carousel-progress span');
+function move(dir){carousel.scrollBy({left:dir*(slides[0].offsetWidth+20),behavior:'smooth'})}
+document.querySelector('.next').addEventListener('click',()=>move(1));document.querySelector('.prev').addEventListener('click',()=>move(-1));
+carousel.addEventListener('scroll',()=>{const max=carousel.scrollWidth-carousel.clientWidth;progress.style.transform=`translateX(${max?carousel.scrollLeft/max*200:0}%)`});
+let down=false,startX,scrollLeft;carousel.addEventListener('pointerdown',e=>{down=true;carousel.classList.add('dragging');startX=e.pageX;scrollLeft=carousel.scrollLeft;carousel.setPointerCapture(e.pointerId)});carousel.addEventListener('pointermove',e=>{if(!down)return;carousel.scrollLeft=scrollLeft-(e.pageX-startX)});carousel.addEventListener('pointerup',()=>{down=false;carousel.classList.remove('dragging')});
+const toast=document.querySelector('.toast');function pop(text){toast.textContent=text;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}
+document.querySelector('.share').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);pop('Link copied. Send it somewhere fun ✦')}catch{pop('Ready to share ✦')}});
+const modal=document.querySelector('.reel-modal');document.querySelector('.play-reel').addEventListener('click',()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false')});document.querySelector('.close-reel').addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)document.querySelector('.close-reel').click()});
+document.querySelector('.remind').addEventListener('click',e=>{e.currentTarget.classList.add('done');e.currentTarget.innerHTML='Reminder set <span>✓</span>';pop('You’re on the list. See you live!')});
+document.querySelector('.tile-podcast button').addEventListener('click',e=>{e.preventDefault();e.currentTarget.textContent=e.currentTarget.textContent==='▶'?'Ⅱ':'▶';pop(e.currentTarget.textContent==='Ⅱ'?'Playing: Notes to My Younger Self':'Podcast paused')});
+document.addEventListener('pointermove',e=>{const g=document.querySelector('.cursor-glow');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'});
+document.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();pop('Demo link — connect your real destination here')}));
